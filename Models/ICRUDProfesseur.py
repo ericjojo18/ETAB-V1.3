@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Models.Personne import Profeseur
+from Models.Professeur import Profeseur
 class ICRUDProfesseur(ABC):
     @abstractmethod
     def ajouter(self, profeseur) -> 'Profeseur':

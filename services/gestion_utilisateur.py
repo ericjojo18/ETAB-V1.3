@@ -68,25 +68,13 @@ class GestionUtilisateur:
             print(msg)
         except ValueError as e:
             print(f"Erreur: {e}")
-
+ 
         #supprimer un professeur
     def supprime_utlisateur(self):
         #pseudo = input("\nEntrez l'identifiant unique de l'utilisateur à supprimer: ")
         pseudo = input("Entrez le pseudo de l'utilisateur à supprimer : ")
         if not Utilisateur.supprimerCompte(pseudo):
             print(f"L'utilisateur {pseudo} n'existe pas.")
-        
-        #try:
-            #if not id:
-                #raise ValueError("l'identifiant ne peut pas etre vide.")
-            #if id in self.utilisateurs:
-               # del self.utilisateurs[id]
-                #self.professeurs.remove(id)
-                #print("utilisateur supprimé avec succès.")
-            #else:
-              #  print("Aucun utilisateur trouvé avec cet identifiant.")
-        #except ValueError as e:
-         #   print(f"Erreur: {e}")  
         
         ## Modifier les informations du professeur
 
@@ -95,13 +83,13 @@ class GestionUtilisateur:
              
         utilisateur = Utilisateur.recuperer_utilisateur(pseudo)
         if utilisateur:
-            nouveau_motDepasse = bcrypt.hashpw(input(" Entrez le nouveau mot de passe:").encode('utf-8'),bcrypt.gensalt())
-            self.utilisateur.modifierMotDePasse(nouveau_motDepasse)
+            nouveauMotDePasse = bcrypt.hashpw(input(" Entrez le nouveau mot de passe:").encode('utf-8'),bcrypt.gensalt())
+            utilisateur.modifierMotDePasse(nouveauMotDePasse)
         
      #liste des professeurs
     def list_utlisateur(self):
         Utilisateur.listerUtilisateurs()
             
-        #Obtenir le dernier professeur ajouté
+        
 
     

@@ -14,11 +14,11 @@ class ICRUDEleve(ABC):
         pass
 
     @abstractmethod
-    def supprime(self, eleve) -> bool:
+    def supprimer(self, eleve) -> bool:
         pass
 
     @abstractmethod
-    def obtenir(self, identifiant) -> 'Eleve':
+    def obtenirEleve(self, identifiant) -> 'Eleve':
         pass
 
     @abstractmethod

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #from Personne import Profeseur
 from  Models.Professeur import Profeseur
-from ICRUDProfesseur import ICRUDProfesseur
+from Models.ICRUDProfesseur import ICRUDProfesseur
 class GestionProf:
     
     def __init__(self):

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 #from Personne import Eleve
-from Models.Eleve import Eleve
-from ICRUDEleve import ICRUDEleve
+#from Models.Eleve import Eleve
+
+from Models.Eleve import  Eleve
+import datetime
 
 class GestionEleve:
     
-    def __init__(self):
-        self.eleves = {}
+    #def __init__(self):
+        #self.eleves = {}
         
     # Pour afficher le menu 
     def afficher_menu(self):
@@ -19,8 +21,7 @@ class GestionEleve:
             print("2: Supprimer un élève")
             print("3: Modifier les informations de l'élève")
             print("4: Lister les élèves")
-            print("5: Obtenir le dernier élève ajouté")
-            print("6: Retour")
+            print("5: Retour")
             print("0: Quitter")
             
             menu_choix = input("Choisissez une option: ")
@@ -32,10 +33,8 @@ class GestionEleve:
                 elif menu_choix == '3':
                     self.modifier_eleve()
                 elif menu_choix == '4':
-                    self.list_eleve() 
+                    self.lister_eleve() 
                 elif menu_choix == '5':
-                    self.dernier_eleve()
-                elif menu_choix == '6':
                     break
                 elif menu_choix == '0':
                     break
@@ -45,12 +44,9 @@ class GestionEleve:
                 print(f"Erreur: {e}")
 
     # Ajouter un élève
-    def ajouter_eleve(self) -> bool:
+    def ajouter_eleve(self):
         try:
-            id = input("Entrez l'identifiant: ")
-            if not id:
-                raise ValueError("Le champ identifiant ne peut pas être vide.")
-        
+            
             nom = input("Entrez le nom: ")
             if not nom:
                 raise ValueError("Le champ nom ne peut pas être vide.")
@@ -60,11 +56,16 @@ class GestionEleve:
                 raise ValueError("Le champ prénom ne peut pas être vide.")
         
             dateNaissance = input("Entrez la date de naissance (21/10/2000): ")
+            dateNaissance = datetime.datetime.strptime(dateNaissance, "%d-%m-%Y")
             if not dateNaissance:
                 raise ValueError("Le champ date de naissance ne peut pas être vide.")
        
             ville = input("Entrez la ville: ")
             if not ville:
+                raise ValueError("Le champ ville ne peut pas être vide.")
+            
+            telephone = input("Entrez la telephone: ")
+            if not telephone:
                 raise ValueError("Le champ ville ne peut pas être vide.")
         
             classe = input("Entrez la classe: ")
@@ -74,41 +75,35 @@ class GestionEleve:
             matricule = input("Entrez la matricule: ")
             if not matricule:
                 raise ValueError("Le champ classe ne peut pas être vide.")
+            
+            eleve = Eleve(None,nom, prenom, ville, dateNaissance, telephone, classe,matricule)
+            Eleve.ajouter(eleve)
         
-            eleve = Eleve(id, nom, prenom, dateNaissance, ville, classe, matricule)
+            #eleve = Eleve(id, nom, prenom, dateNaissance, ville, classe, matricule)
         
-            self.eleves[id] = eleve
+            #self.eleves[id] = eleve
             print("\nÉlève ajouté avec succès")
         except ValueError as e:
             print(f"Erreur: {e}")
 
     # Supprimer un élève
-    def supprime_eleve(self) -> bool:
-        id = input("\nEntrez l'identifiant unique de l'élève à supprimer: ")
+    def supprime_eleve(self) :
+        id = int(input("\nEntrez l'identifiant unique de l'élève à supprimer: "))
+        Eleve.supprimer(id)
     
-        try:
-            if not id:
-                raise ValueError("L'identifiant ne peut pas être vide.")
-            if id in self.eleves:
-                del self.eleves[id]
-                print("Élève supprimé avec succès.")
-            else:
-                print("Aucun élève trouvé avec cet identifiant.")
-        except ValueError as e:
-            print(f"Erreur: {e}")
+        print("\nÉlément supprimé avec succès")
 
     # Modifier les informations de l'élève
-    def modifier_eleve(self) -> bool:
-        id = input("\nEntrez l'identifiant unique de l'élève à modifier: ")
+    def modifier_eleve(self ) :
+        
     
         try:
+            id = int(input("\nEntrez l'identifiant unique de l'élève à modifier: "))
             if not id:
                 raise ValueError("L'identifiant ne peut pas être vide.")
-            if id not in self.eleves:
-                print("Aucun élève trouvé avec cet identifiant.")
-                return
+            
     
-            eleve = self.eleves[id]
+            eleve = Eleve.Obtenir(id)
     
             while True:
                 print("\n1: Modifier le nom")
@@ -181,32 +176,16 @@ class GestionEleve:
             print(f"Erreur: {e}")
 
     # Liste des élèves
-    def list_eleve(self):
-        if not self.eleves:
-            print("Aucun élève trouvé.")
-            return
-        print("\nListe des élèves :")
-        for eleve in self.eleves.values():
-            print("\nID:", eleve.id)
-            print("Nom:", eleve.nom)
-            print("Prénom:", eleve.prenom)
-            print("Date de naissance:", eleve.dateNaissance)
-            print("Ville:", eleve.ville)
-            print("Classe:", eleve.classe)
-            print("Matricule:", eleve.matricule)
-            print("-" * 20) 
+    def lister_eleve(self):
+        eleves = Eleve.obtenirEleve() 
+        if eleves is not None:
+            print("Liste des élèves :")
+            for e in eleves:
+                print(f"ID: {e[0]}, Nom : {e[1]}, Prénom : {e[2]}, Ville : {e[3]}, Date de Naissance : {e[4]}, "
+                    f"Téléphone : {e[5]}, Classe : {e[6]}, Matricule : {e[7]}") 
+                self.afficher_menu()
+        else:
+         print("Aucun élève trouvé.")
         
     # Obtenir le dernier élève ajouté
-    def dernier_eleve(self):
-        if self.eleves:
-            dernier = next(reversed(self.eleves.values()))
-            print("\nDernier élève ajouté :")
-            print("ID:", dernier.id)
-            print("Nom:", dernier.nom)
-            print("Prénom:", dernier.prenom)
-            print("Date de naissance:", dernier.dateNaissance)
-            print("Ville:", dernier.ville)
-            print("Classe:", dernier.classe)
-            print("Matricule:", dernier.matricule)
-        else:
-            print("Aucun élève trouvé.")
+    
