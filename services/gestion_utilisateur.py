@@ -91,83 +91,17 @@ class GestionUtilisateur:
         ## Modifier les informations du professeur
 
     def modifier_utlisateur(self):
-        pseudo = input("\nEntrez le pseudo de l'utilisateur à modifier: ")         
-        
-        try:
-            utilisateur = Utilisateur.trouverCompte(pseudo)
-            #verifier si l'id existe
-            if not utilisateur:
-                print("Aucun utilisateur trouvé avec ce pseudo.")
-                return
-                #return
-        
-            utilisateur = self.utilisateurs[id]
-        
-            while True:
-                print("\n1: Modifier le nom")
-                print("2: Modifier le pseudo")
-                print("3: Modifier le mot de passe")
-                print("7: Retour")
-                print("8: Accueil")
-            
-                menu_modify = input("Choisissez une option: ")    
-            
-                #modifier le nom
-                if menu_modify == '1':
-                    new_pseudo = input("Entrez le nouveau pseudo: ") 
-                    if not new_pseudo:
-                        raise ValueError("l'identifiant ne peut pas etre vide.")      
-                    utilisateur.pseudo = new_pseudo
-            
-                #modifier le prénom
-                elif menu_modify == '2':
-                    new_motDePasse = input("Entrez le mot passe: ") 
-                    if not new_motDePasse:
-                        raise ValueError("le mot passe ne peut pas etre vide.")        
-                    new_motDePasse.new_motDePasse = new_motDePasse
-                
-                #modifier l'identifiant    
-                elif menu_modify == '6':
-                    new_id = input("Entrez le nouvel identifiant: ")  
-                    if not new_id:
-                        raise ValueError("l'identifiant ne peut pas etre vide.")       
-                    self.utilisateur[new_id] = self.utilisateur.pop(id)
-                    id = new_id
-                elif menu_modify == '7':
-                    break
-                elif menu_modify == '8':
-                    
-                    break
-                else:
-                    print("Option invalide. Veuillez réessayer.")
-        except ValueError as e:
-            print(f"Erreur: {e}")
+        pseudo = input("\nEntrez le pseudo de l'utilisateur à modifier: ")    
+             
+        utilisateur = Utilisateur.recuperer_utilisateur(pseudo)
+        if utilisateur:
+            nouveau_motDepasse = bcrypt.hashpw(input(" Entrez le nouveau mot de passe:").encode('utf-8'),bcrypt.gensalt())
+            self.utilisateur.modifierMotDePasse(nouveau_motDepasse)
         
      #liste des professeurs
     def list_utlisateur(self):
-        if not self.utilisateurs:
-            print("Aucun professeur trouvé.")
-            return
-        print("\nListe des utilisateurs :")
-        for utilisateur in self.utilisateurs.values():
-            print("\nID:", utilisateur.id)
-            print("Pseudo:", utilisateur.pseudo)
-            print("Mot de passe: ", utilisateur.motDePasse)
-            print("-" * 20) 
+        Utilisateur.listerUtilisateurs()
             
         #Obtenir le dernier professeur ajouté
 
-    def dernier_utlisateur(self):
-        #if self.professeurs:
-        # print(self.professeurs[-1])
-        #else:
-            #print("Aucun professeur trouvé.")
-            
-            if self.utilisateurs:
-                dernier = next(reversed(self.utilisateurs.values()))
-                print("\nDernier élève ajouté :")
-                print("\nID:", dernier.id)
-                print("Pseudo:", dernier.pseudo)
-                print("Mot de passe: ", dernier.motDePasse)
-            else:
-                print("Aucun utilisateur trouvé.")
+    
