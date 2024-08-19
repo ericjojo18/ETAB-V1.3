@@ -1,167 +1,184 @@
-#la classe Eleve qui herite des methodes et des propriétés de la classe personne en utilisant la fonction super()        
-from Models.Personne import Personne
 from Models.ICRUDEleve import ICRUDEleve
-from base.bd import create_connection
+from base.bd import DatabaseConnection
 from mysql.connector import Error
-class Eleve(Personne, ICRUDEleve):
+import datetime
+
+class Eleve(ICRUDEleve):
     """
-    Eleve est une classe qui herite de Personne et de ICRUDEleve
+    Eleve est une classe qui hérite des méthodes de ICRUDEleve
     """
     
     __eleves = []
-    #initialisation des propriétés d'un eleve
-    def __init__(self, id,nom, prenom, ville, dateNaissance, telephone, classe, matricule):
-        super().__init__( id, nom, prenom, ville, dateNaissance, telephone)
-        self.__classe =  classe
+
+    def __init__(self, id, nom, prenom, ville, date_naissance, telephone, classe, matricule):
+        self.__id = id
+        self.__nom = nom
+        self.__prenom = prenom
+        self.__ville = ville 
+        self.__date_naissance = date_naissance 
+        self.__telephone = telephone
+        self.__classe = classe
         self.__matricule = matricule 
-        
-    #Retourne sous forme de chaine de l'élève
-    @property 
+
+    def __str__(self):
+        return (f"Id: {self.get_id()}, Nom: {self.get_nom()}, Prénom: {self.get_prenom()}, "
+                f"Ville: {self.get_ville()}, Date de naissance: {self.get_date_naissance()}, "
+                f"Téléphone: {self.get_telephone()}, Classe: {self.get_classe()}, Matricule: {self.get_matricule()}")
+
+    # Accesseurs
+    def get_id(self):
+        return self.__id
+
+    def get_date_naissance(self):
+        return self.__date_naissance 
+
+    def get_ville(self):
+        return self.__ville
+
+    def get_prenom(self):
+        return self.__prenom
+
+    def get_nom(self):
+        return self.__nom   
+
+    def get_classe(self):
+        return self.__classe 
+    
     def get_matricule(self):
         return self.__matricule
-    
-    @property 
-    def get_classe(self):
-        return self.__classe
+
+    def get_telephone(self):
+        return self.__telephone    
+
+    # Mutateurs
+    def set_prenom(self, prenom):
+        self.__prenom = prenom
+
+    def set_nom(self, nom):
+        self.__nom = nom
+
+    def set_ville(self, ville):
+        self.__ville = ville
+
+    def set_date_naissance(self, date_naissance):
+        self.__date_naissance = date_naissance 
+
+    def set_telephone(self, telephone):
+        self.__telephone = telephone
 
     def set_classe(self, classe):
         self.__classe = classe            
 
     def set_matricule(self, matricule):
         self.__matricule = matricule
+        
+    def obtenir_age(self):
+        date_present = datetime.date.today()
+        date_naissance = datetime.datetime.strptime(self.__date_naissance, "%d/%m/%Y")
+        age = date_present.year - date_naissance.year - ((date_present.month, date_present.day) < (date_naissance.month, date_naissance.day))
+        return age
 
     # Implémentation des méthodes CRUD
-    # Ajouter un élève
-    def ajouter(eleve):
-        #inserer personne
-        conn = create_connection()
-        if conn.is_connected():
-            curseur = conn.cursor()
-            curseur.execute("INSERT INTO personnes (nom, prenom, date_naissance, ville, telephone) VALUES (%s, %s, %s, %s, %s)", 
-                            (eleve.get_nom, eleve.get_prenom, eleve.get_date_naissance, eleve.get_ville, eleve.get_telephone))
-            conn.commit()
-            id_personne = curseur.lastrowid
-            
-            curseur.execute("INSERT INTO eleves (id_personne, classe, matricule ) VALUES (%s, %s, %s)",
-                            (id_personne, eleve.get_classe, eleve.get_matricule))
-            conn.commit()
-            print(f"l'éléve {eleve.get_prenom} {eleve.get_nom} a bien été ajoutée dans la base de données.")
-            conn.close()
-        #Eleve.__eleves.append(eleve)
-
-    # modifier un élève
-    def modifier(eleve):
-        conn = create_connection()
-        if conn.is_connected():
-            curseur = conn.cursor()
-            
-            try:
-                # Vérifier si l'élève existe dans la base de données
-                curseur.execute("SELECT id_personne FROM eleves WHERE id_personne = %s", (eleve.get_id(),))
-                if curseur.fetchone() is None:
-                    print(f"Aucun élève trouvé avec l'ID {eleve.get_id()}.")
-                    conn.close()
-                    return False
-
-                # Mettre à jour les informations de l'élève dans la base de données
+    @classmethod
+    def ajouter(cls, eleve):
+        bd = DatabaseConnection()
+        conn = bd.create_connection()
+        try:
+            if conn.is_connected():
+                curseur = conn.cursor()
                 curseur.execute(
-                    "UPDATE personnes SET nom = %s, prenom = %s, date_naissance = %s, ville = %s, telephone = %s WHERE id = %s",
-                    (eleve.get_nom(), eleve.get_prenom(), eleve.get_date_naissance(), eleve.get_ville(), eleve.get_telephone(), eleve.get_id())
-                )
-                curseur.execute(
-                    "UPDATE eleves SET classe = %s, matricule = %s WHERE id_personne = %s",
-                    (eleve.get_classe(), eleve.get_matricule(), eleve.get_id())
+                    "INSERT INTO eleves (nom, prenom, ville, date_naissance, telephone, classe, matricule) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    (eleve.get_nom(), eleve.get_prenom(), eleve.get_ville(), str(eleve.get_date_naissance()), eleve.get_telephone(), eleve.get_classe(), eleve.get_matricule())
                 )
                 conn.commit()
-
-                # Mettre à jour l'élève en mémoire
-                for index, eleve_existe in enumerate(Eleve.__eleves):
-                    if eleve_existe.get_id() == eleve.get_id():
-                        Eleve.__eleves[index] = eleve
-                        print(f"L'élève avec l'ID {eleve.get_id()} a été modifié avec succès.")
-                        break
-                else:
-                    print(f"L'élève avec l'ID {eleve.get_id()} n'a pas été trouvé dans la liste.")
-                    conn.close()
-                    return False
-                
-            except Exception as e:
-                print(f"Erreur lors de la modification : {e}")
-                return False
-            
-            finally:
+                print(f"L'élève {eleve.get_prenom()} {eleve.get_nom()} a bien été ajouté dans la base de données.")
+        except Exception as e:
+            print(f"Erreur lors de l'ajout : {e}")
+        finally:
+            if conn.is_connected():
+                curseur.close()
                 conn.close()
-            
-        return True
 
+    @classmethod
+    def modifier(cls, eleve):
+        bd = DatabaseConnection()
+        conn = bd.create_connection()
+        try:
+            if conn.is_connected():
+                curseur = conn.cursor()
+                curseur.execute(
+                    "UPDATE eleves SET nom = %s, prenom = %s, ville = %s, date_naissance = %s, telephone = %s, classe = %s, matricule = %s WHERE id = %s",
+                    (eleve.get_nom(), eleve.get_prenom(), eleve.get_ville(), eleve.get_date_naissance(), eleve.get_telephone(), eleve.get_classe(), eleve.get_matricule(), eleve.get_id())
+                )
+                conn.commit()
+                print(f"L'élève avec l'ID {eleve.get_id()} a été modifié avec succès.")
+                return True
+        except Exception as e:
+            print(f"Erreur lors de la modification : {e}")
+        finally:
+            if conn.is_connected():
+                curseur.close()
+                conn.close()
+        return False
 
-    # supprimer un élève 
-    def supprimer(id):
-        conn = create_connection()
+    @classmethod
+    def supprimer(cls, id):
+        bd = DatabaseConnection()
+        conn = bd.create_connection()
         if conn.is_connected():
             curseur = conn.cursor()
-
-            # Supprimer d'abord l'élève de la table `eleves`
-            curseur.execute("DELETE FROM eleves WHERE id_personne = %s", (id,))
+            curseur.execute("DELETE FROM eleves WHERE id = %s", (id,))
             conn.commit()
-
-            # Ensuite, supprimer la personne de la table `personnes`
-            curseur.execute("DELETE FROM personnes WHERE id = %s", (id,))
-            conn.commit()
-
             print(f"L'élève avec ID {id} a bien été supprimé de la base de données.")
             conn.close()
 
-
-    # Obtenir les élèves
-    def obtenirEleve():
+    @classmethod
+    def obtenirEleve(cls):
+        bd = DatabaseConnection()
+        conn = bd.create_connection()
         try:
-            conn = create_connection()
             if conn.is_connected():
                 curseur = conn.cursor()
-                curseur.execute(" SELECT personnes.id, personnes.nom, personnes.prenom, personnes.ville, personnes.date_naissance, personnes.telephone, eleves.classe, eleves.matricule FROM personnes JOIN eleves ON personnes.id = eleves.id_personne")
+                curseur.execute("SELECT id, nom, prenom, date_naissance, ville, telephone, classe, matricule FROM eleves")
                 eleves = curseur.fetchall()
-            
-                if not eleves:
-                    return None
-       
-            return eleves
+                if eleves:
+                    return [Eleve(*eleve) for eleve in eleves]
+                else:
+                    print("Aucun élève trouvé.")
+                    return []
         except Error as e:
-            print(f"Error: {e}")
-            return False
-
+            print(f"Erreur : {e}")
         finally:
             if conn.is_connected():
                 curseur.close()
                 conn.close()
-            
-                 
+        return []
 
-
-    # Obtenir un élève par son id
-    def Obtenir(id):
+    @classmethod
+    def Obtenir(cls, id):
+        """
+        Récupère un élève de la base de données en fonction de son identifiant.
+    
+        Args:
+            id (int): L'identifiant de l'élève.
+    
+        Returns:
+            Eleve: L'objet Eleve correspondant à l'identifiant, ou None si aucun élève n'est trouvé.
+        """
+        bd = DatabaseConnection()
+        conn = bd.create_connection()
         try:
-            conn = create_connection()
-            if conn.is_connected():
-                curseur = conn.cursor()
-                curseur.execute("SELECT * FROM personnes WHERE id = %s",(id,))
-                eleves = curseur.fetchone()
-            
-                if  eleves:
-                    return None
-       
-            return eleves
+            conn = bd.create_connection()
+            curseur = conn.cursor()
+            curseur.execute("SELECT id, nom, prenom, ville, date_naissance, telephone, classe, matricule FROM eleves WHERE id = %s", (id,))
+            eleve_db = curseur.fetchone()
+            if eleve_db:
+                return Eleve(*eleve_db)
+            else:
+                print("Aucun élève trouvé avec cet identifiant.")
         except Error as e:
-            print(f"Error: {e}")
-            return False
+            print(f"Erreur : {e}")
+        return None
 
-        finally:
-            if conn.is_connected():
-                curseur.close()
-                conn.close()
-        
-
-#afficher les informations de l'élève et la classe      
     def afficher_info(self):
-         super().afficher_info()
-         print(f"classe:{self.classe}")
+        print(f"Classe: {self.get_classe()}")

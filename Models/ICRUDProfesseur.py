@@ -1,22 +1,24 @@
 from abc import ABC, abstractmethod
-from Models.Professeur import Profeseur
+from Models import Professeur
 class ICRUDProfesseur(ABC):
+   
     @abstractmethod
-    def ajouter(self, profeseur) -> 'Profeseur':
+    def ajouter(self, professeur) -> Professeur:
         pass
 
     @abstractmethod
-    def modifier(self, profeseur) -> 'Profeseur':
+    def modifier(self, professeur) -> Professeur:
         pass
 
     @abstractmethod
-    def supprime(self, profeseur) -> bool:
+    def supprimer(self, professeur) -> bool:
+        pass
+
+
+    @abstractmethod
+    def obtenirProf(self) -> list:
         pass
 
     @abstractmethod
-    def dernier_prof(self, identifiant) -> 'Profeseur':
-        pass
-
-    @abstractmethod
-    def list_prof(self) -> list:
+    def Obtenir(self,id) :
         pass

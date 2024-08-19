@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from base import bd, req_utilisateur
+from base.bd import DatabaseConnection
+from base import req_utilisateur
 class Utilisateur:
     
     __idunique = 0
@@ -43,6 +44,7 @@ class Utilisateur:
     @classmethod
     def ajouterCompte(cls, pseudo, motDePasse):
         """Ajoute un nouvel utilisateur à la base de données."""
+        bd = DatabaseConnection()
         dateCreation = datetime.now()
         nouvel_utilisateur = cls(pseudo, motDePasse, dateCreation)
         
@@ -64,6 +66,7 @@ class Utilisateur:
     def modifierMotDePasse(self, nouveauMotDePasse):
         """Modifie le mot de passe de l'utilisateur dans la base de données."""
         
+        bd = DatabaseConnection()
         self.__motDePasse = nouveauMotDePasse
         connection = bd.create_connection()
         if connection and connection.is_connected():
@@ -71,16 +74,17 @@ class Utilisateur:
                 curseur = connection.cursor()
                 req_utilisateur.modifier_mot_de_passe(curseur, self.__pseudo, nouveauMotDePasse)
                 connection.commit()
-                print(f"Mot de passe modifié pour l'utilisateur {self.__pseudo}.")
+                print(f"Mot de passe modifié pour l'utilisateur {self.__pseudo}")
             except Exception as e:
                 print(f"Erreur lors de la modification du mot de passe: {e}")
             finally:
                 curseur.close()
-                connection.close()
+                bd.close_connection()
 
     @classmethod
     def supprimerCompte(cls, pseudo):
         """Supprime un utilisateur de la base de données."""
+        bd = DatabaseConnection()
         connection = bd.create_connection()
         if connection and connection.is_connected():
             try:
@@ -92,11 +96,12 @@ class Utilisateur:
                 print(f"Erreur lors de la suppression de l'utilisateur: {e}")
             finally:
                 curseur.close()
-                connection.close()
+                bd.close_connection()
 
     @classmethod
     def listerUtilisateurs(cls):
         """Liste tous les utilisateurs de la base de données."""
+        bd = DatabaseConnection()
         connection = bd.create_connection()
         utilisateurs = []
         if connection and connection.is_connected():
@@ -110,18 +115,24 @@ class Utilisateur:
                 print(f"Erreur lors de la récupération des utilisateurs: {e}")
             finally:
                 curseur.close()
-                connection.close()
+                bd.close_connection()
         return utilisateurs
 
     @classmethod
     def recuperer_utilisateur(cls, pseudo):
+        bd = DatabaseConnection()
         connection = bd.create_connection()
-        if connection:
-            cursor = connection.cursor()
-            result = req_utilisateur.recuperer_utilisateur(cursor, pseudo)
-            connection.close()
-            if result:
-                return cls(result[0], result[1], result[2]) 
+        if connection and connection.is_connected():
+            try:
+                curseur = connection.cursor()
+                result = req_utilisateur.recuperer_utilisateur(curseur, pseudo)
+                if result:
+                    return cls(result[0], result[1], result[2]) 
+            except Exception as e:
+                print(f"Erreur lors de la création du compte: {e}")
+            finally:
+                curseur.close()
+                bd.close_connection()
         return None
     
     

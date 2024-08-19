@@ -79,13 +79,14 @@ class GestionUtilisateur:
         ## Modifier les informations du professeur
 
     def modifier_utlisateur(self):
-        pseudo = input("\nEntrez le pseudo de l'utilisateur à modifier: ")    
-             
-        utilisateur = Utilisateur.recuperer_utilisateur(pseudo)
+        pseudo = input("Entrez le pseudo de  l'utilisateur dont vous voulez modifier le mot de passe : ")
+        utilisateur = Utilisateur.recuperer_utilisateur(pseudo)  
         if utilisateur:
-            nouveauMotDePasse = bcrypt.hashpw(input(" Entrez le nouveau mot de passe:").encode('utf-8'),bcrypt.gensalt())
+            nouveauMotDePasse =  bcrypt.hashpw(input("Entrez le nouveau mot de passe : ").encode('utf-8'), bcrypt.gensalt())
             utilisateur.modifierMotDePasse(nouveauMotDePasse)
-        
+        else:
+            print(f"L'utilisateur {pseudo} n'existe pas.")
+            
      #liste des professeurs
     def list_utlisateur(self):
         Utilisateur.listerUtilisateurs()

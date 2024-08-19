@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 from Models import Utilisateur
 import bcrypt
-from base import bd 
+from base.bd import DatabaseConnection 
 from menu import MenuPrincipal
 class Authentification:
     #def __init__(self):
         #self.pseudo = "admin"
         #self.motDePasse = "admin"
-        
+    
         
     def connexion_utilisateur(self, pseudo):
+        bd = DatabaseConnection()
         connection = bd.create_connection()
         if connection: 
             cursor = connection.cursor()
             cursor.execute("SELECT pseudo, mot_de_passe FROM utilisateurs WHERE pseudo = %s", (pseudo,))
             utilisateur = cursor.fetchone()
             cursor.close()
-            connection.close()
+            bd.close_connection()
             return utilisateur
         return None
     

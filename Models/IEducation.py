@@ -7,7 +7,7 @@ class IEducation():
 
     @abstractmethod
     def enseigner(self, matiere: str) -> str:
-        return f"{self.nom} enseigne {matiere}."
+        return f"{self.matiereEnseignee} enseigne {matiere}."
 
     def preparerCours(self, cours: str) -> str:
         return f"{self.nom} prépare le cours de {cours}."

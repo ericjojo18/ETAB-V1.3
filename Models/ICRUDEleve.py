@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Models.Personne import Eleve
+from Models import Eleve
 class ICRUDEleve(ABC):
     
     """
@@ -18,9 +18,9 @@ class ICRUDEleve(ABC):
         pass
 
     @abstractmethod
-    def obtenirEleve(self, identifiant) -> 'Eleve':
+    def obtenirEleve(self) -> list:
         pass
 
     @abstractmethod
-    def Obtenir(self) -> list:
+    def Obtenir(self,id) :
         pass

@@ -55,14 +55,15 @@ class GestionEleve:
             if not prenom:
                 raise ValueError("Le champ prénom ne peut pas être vide.")
         
-            dateNaissance = input("Entrez la date de naissance (21/10/2000): ")
-            dateNaissance = datetime.datetime.strptime(dateNaissance, "%d-%m-%Y")
-            if not dateNaissance:
-                raise ValueError("Le champ date de naissance ne peut pas être vide.")
-       
             ville = input("Entrez la ville: ")
             if not ville:
                 raise ValueError("Le champ ville ne peut pas être vide.")
+            
+            date_naissance = input("Entrez la date de naissance (21/10/2000): ")
+            
+            date_naissance= datetime.datetime.strptime(date_naissance, "%d/%m/%Y")
+            if not date_naissance:
+                raise ValueError("Le champ date de naissance ne peut pas être vide.")
             
             telephone = input("Entrez la telephone: ")
             if not telephone:
@@ -76,12 +77,9 @@ class GestionEleve:
             if not matricule:
                 raise ValueError("Le champ classe ne peut pas être vide.")
             
-            eleve = Eleve(None,nom, prenom, ville, dateNaissance, telephone, classe,matricule)
+            eleve = Eleve(None,nom, prenom, ville, date_naissance, telephone, classe, matricule)
             Eleve.ajouter(eleve)
         
-            #eleve = Eleve(id, nom, prenom, dateNaissance, ville, classe, matricule)
-        
-            #self.eleves[id] = eleve
             print("\nÉlève ajouté avec succès")
         except ValueError as e:
             print(f"Erreur: {e}")
@@ -89,103 +87,73 @@ class GestionEleve:
     # Supprimer un élève
     def supprime_eleve(self) :
         id = int(input("\nEntrez l'identifiant unique de l'élève à supprimer: "))
+        
         Eleve.supprimer(id)
+        if not Eleve.supprimer(id):
+            print(f"L'utilisateur {id} n'existe pas.")
     
         print("\nÉlément supprimé avec succès")
 
     # Modifier les informations de l'élève
-    def modifier_eleve(self ) :
-        
-    
+    def modifier_eleve(self):
         try:
-            id = int(input("\nEntrez l'identifiant unique de l'élève à modifier: "))
-            if not id:
-                raise ValueError("L'identifiant ne peut pas être vide.")
-            
-    
+            id = int(input("Entrez l'identifiant de l'élève à modifier: "))
             eleve = Eleve.Obtenir(id)
-    
-            while True:
-                print("\n1: Modifier le nom")
-                print("2: Modifier le prénom")
-                print("3: Modifier la date de naissance (21/10/2000)")
-                print("4: Modifier la ville")
-                print("5: Modifier la classe")
-                print("6: Modifier la matricule")
-                print("7: Modifier l'identifiant")
-                print("8: Retour")
-                print("9: Accueil")
-        
-                menu_modify = input("Choisissez une option: ")    
-        
-                # Modifier le nom
-                if menu_modify == '1':
-                    new_nom = input("Entrez le nouveau nom: ") 
-                    if not new_nom:
-                        raise ValueError("Le champ nom ne peut pas être vide.")      
-                    eleve.nom = new_nom
-         
-                # Modifier le prénom
-                elif menu_modify == '2':
-                    new_prenom = input("Entrez le nouveau prénom: ") 
-                    if not new_prenom:
-                        raise ValueError("Le champ prénom ne peut pas être vide.")        
-                    eleve.prenom = new_prenom
             
-                # Modifier la date de naissance 
-                elif menu_modify == '3':
-                    new_dateNaissance = input("Entrez la nouvelle date de naissance : ")   
-                    if not new_dateNaissance:
-                        raise ValueError("Le champ date de naissance ne peut pas être vide.")  
-                    eleve.dateNaissance = new_dateNaissance 
-            
-                # Modifier la ville
-                elif menu_modify == '4':
-                    new_ville = input("Entrez la nouvelle ville : ")   
-                    if not new_ville:
-                        raise ValueError("Le champ ville ne peut pas être vide.")  
-                    eleve.ville = new_ville
+            if eleve:
+                print(eleve)
                 
-                # Modifier la classe
-                elif menu_modify == '5':
-                    new_classe = input("Entrez la nouvelle classe: ")   
-                    if not new_classe:
-                        raise ValueError("Le champ classe ne peut pas être vide.")  
-                    eleve.classe = new_classe
-                    
-                elif menu_modify == '6':
-                    new_matricule = input("Entrez la nouvelle classe: ")   
-                    if not new_classe:
-                        raise ValueError("Le champ classe ne peut pas être vide.")  
-                    eleve.classe = new_matricule
-            
-                # Modifier l'identifiant    
-                elif menu_modify == '7':
-                    new_id = input("Entrez le nouvel identifiant: ")  
-                    if not new_id:
-                        raise ValueError("Le champ identifiant ne peut pas être vide.")  
-                    self.eleves[new_id] = self.eleves.pop(id)
-                    id = new_id
-                elif menu_modify == '8':
-                    break
-                elif menu_modify == '9':
-                    break
+                # Mise à jour des attributs
+                new_date_naissance = input("Nouvelle date de naissance (JJ/MM/AAAA) : ") or eleve.get_date_naissance()
+                if new_date_naissance:
+                    try:
+                        date_naissance_obj = datetime.datetime.strptime(new_date_naissance, "%d/%m/%Y")
+                        new_date_naissance = date_naissance_obj.strftime("%Y-%m-%d")
+                    except ValueError:
+                        raise ValueError("La date de naissance doit être au format JJ/MM/AAAA.")
+                
+                new_ville = input("Nouvelle ville : ") or eleve.get_ville()
+                new_prenom = input("Nouveau prénom : ") or eleve.get_prenom()
+                new_nom = input("Nouveau nom : ") or eleve.get_nom()
+                new_telephone = input("Nouveau téléphone : ") or eleve.get_telephone()
+                new_classe = input("Nouvelle classe : ") or eleve.get_classe()
+                new_matricule = input("Nouveau matricule : ") or eleve.get_matricule()
+        
+                # Mettre à jour les attributs de l'objet
+                eleve.set_date_naissance(new_date_naissance)
+                eleve.set_ville(new_ville)
+                eleve.set_prenom(new_prenom)
+                eleve.set_nom(new_nom)
+                eleve.set_telephone(new_telephone)
+                eleve.set_classe(new_classe)
+                eleve.set_matricule(new_matricule)
+        
+                # Appeler la méthode modifier de la classe
+                if Eleve.modifier(eleve):
+                    print("\nÉlève modifié avec succès")
                 else:
-                    print("Option invalide. Veuillez réessayer.")
+                    print("Erreur lors de la modification de l'élève.")
+            else:
+                print("Élève non trouvé.")
         except ValueError as e:
             print(f"Erreur: {e}")
 
+
+
     # Liste des élèves
     def lister_eleve(self):
-        eleves = Eleve.obtenirEleve() 
-        if eleves is not None:
+        eleves = Eleve.obtenirEleve()  # Assurez-vous que cette méthode retourne une liste d'objets Eleve
+        if eleves:
             print("Liste des élèves :")
             for e in eleves:
-                print(f"ID: {e[0]}, Nom : {e[1]}, Prénom : {e[2]}, Ville : {e[3]}, Date de Naissance : {e[4]}, "
-                    f"Téléphone : {e[5]}, Classe : {e[6]}, Matricule : {e[7]}") 
-                self.afficher_menu()
+                # Utilisez les méthodes d'accès définies dans la classe Eleve
+                print(f"ID: {e.get_id()}, Nom : {e.get_nom()}, Prénom : {e.get_prenom()}, Ville : {e.get_ville()}, "
+                    f"Date de Naissance : {e.get_date_naissance()}, Téléphone : {e.get_telephone()}, "
+                    f"Classe : {e.get_classe()}, Matricule : {e.get_matricule()}")
+            self.afficher_menu()
         else:
-         print("Aucun élève trouvé.")
+            print("Aucun élève trouvé.")
+
         
     # Obtenir le dernier élève ajouté
     
