@@ -83,7 +83,7 @@ class GestionUtilisateur:
         utilisateur = Utilisateur.recuperer_utilisateur(pseudo)  
         if utilisateur:
             nouveauMotDePasse =  bcrypt.hashpw(input("Entrez le nouveau mot de passe : ").encode('utf-8'), bcrypt.gensalt())
-            utilisateur.modifierMotDePasse(nouveauMotDePasse)
+            utilisateur.modifierMotDePasse(nouveauMotDePasse,pseudo)
         else:
             print(f"L'utilisateur {pseudo} n'existe pas.")
             

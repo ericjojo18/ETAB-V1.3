@@ -128,7 +128,7 @@ class Professeur(ICRUDProfesseur, IEducation):
         finally:
             if conn.is_connected():
                 curseur.close()
-                conn.close()
+                
         return False
 
     @staticmethod
@@ -146,7 +146,7 @@ class Professeur(ICRUDProfesseur, IEducation):
         finally:
             if conn.is_connected():
                 curseur.close()
-                conn.close()
+                
 
     @classmethod
     def obtenirProf(cls):
@@ -167,7 +167,7 @@ class Professeur(ICRUDProfesseur, IEducation):
         finally:
             if conn.is_connected():
                 curseur.close()
-                conn.close()
+                
         return []
 
     @classmethod
@@ -188,7 +188,7 @@ class Professeur(ICRUDProfesseur, IEducation):
         finally:
             if conn.is_connected():
                 curseur.close()
-                conn.close()
+
         return None
 
     def afficher_info(self):

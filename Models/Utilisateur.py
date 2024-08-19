@@ -63,7 +63,7 @@ class Utilisateur:
                 connection.close()
         return f"Échec de la connexion à la base de données."
 
-    def modifierMotDePasse(self, nouveauMotDePasse):
+    def modifierMotDePasse(self, nouveauMotDePasse,pseudo):
         """Modifie le mot de passe de l'utilisateur dans la base de données."""
         
         bd = DatabaseConnection()
@@ -72,7 +72,7 @@ class Utilisateur:
         if connection and connection.is_connected():
             try:
                 curseur = connection.cursor()
-                req_utilisateur.modifier_mot_de_passe(curseur, self.__pseudo, nouveauMotDePasse)
+                req_utilisateur.modifier_mot_de_passe(curseur, pseudo, nouveauMotDePasse)
                 connection.commit()
                 print(f"Mot de passe modifié pour l'utilisateur {self.__pseudo}")
             except Exception as e:
@@ -96,7 +96,7 @@ class Utilisateur:
                 print(f"Erreur lors de la suppression de l'utilisateur: {e}")
             finally:
                 curseur.close()
-                bd.close_connection()
+                
 
     @classmethod
     def listerUtilisateurs(cls):
@@ -115,7 +115,7 @@ class Utilisateur:
                 print(f"Erreur lors de la récupération des utilisateurs: {e}")
             finally:
                 curseur.close()
-                bd.close_connection()
+                #bd.close_connection()
         return utilisateurs
 
     @classmethod
@@ -132,7 +132,7 @@ class Utilisateur:
                 print(f"Erreur lors de la création du compte: {e}")
             finally:
                 curseur.close()
-                bd.close_connection()
+               # bd.close_connection()
         return None
     
     

@@ -97,7 +97,7 @@ class Eleve(ICRUDEleve):
         finally:
             if conn.is_connected():
                 curseur.close()
-                conn.close()
+                
 
     @classmethod
     def modifier(cls, eleve):
@@ -118,7 +118,7 @@ class Eleve(ICRUDEleve):
         finally:
             if conn.is_connected():
                 curseur.close()
-                conn.close()
+                
         return False
 
     @classmethod
@@ -130,7 +130,7 @@ class Eleve(ICRUDEleve):
             curseur.execute("DELETE FROM eleves WHERE id = %s", (id,))
             conn.commit()
             print(f"L'élève avec ID {id} a bien été supprimé de la base de données.")
-            conn.close()
+            
 
     @classmethod
     def obtenirEleve(cls):
@@ -151,7 +151,7 @@ class Eleve(ICRUDEleve):
         finally:
             if conn.is_connected():
                 curseur.close()
-                conn.close()
+                
         return []
 
     @classmethod
