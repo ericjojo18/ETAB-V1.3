@@ -60,7 +60,7 @@ class Utilisateur:
                 print(f"Erreur lors de la création du compte: {e}")
             finally:
                 curseur.close()
-                connection.close()
+                
         return f"Échec de la connexion à la base de données."
 
     def modifierMotDePasse(self, nouveauMotDePasse,pseudo):
@@ -79,7 +79,7 @@ class Utilisateur:
                 print(f"Erreur lors de la modification du mot de passe: {e}")
             finally:
                 curseur.close()
-                bd.close_connection()
+                
 
     @classmethod
     def supprimerCompte(cls, pseudo):

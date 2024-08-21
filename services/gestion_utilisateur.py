@@ -19,7 +19,7 @@ class GestionUtilisateur:
             print("2: Supprimer un utilisateur")
             print("3: Modifier les informations du utilisateur")
             print("4: Lister les utilisateurs")
-            print("5: Obtenir le dernier professeurr ajouté")
+            #print("5: Obtenir le dernier professeurr ajouté")
             print("6: Retour")
             print("0: Quitter")
             
@@ -73,7 +73,7 @@ class GestionUtilisateur:
     def supprime_utlisateur(self):
         #pseudo = input("\nEntrez l'identifiant unique de l'utilisateur à supprimer: ")
         pseudo = input("Entrez le pseudo de l'utilisateur à supprimer : ")
-        if not Utilisateur.supprimerCompte(pseudo):
+        if not Utilisateur.supprimerCompte(pseudo): 
             print(f"L'utilisateur {pseudo} n'existe pas.")
         
         ## Modifier les informations du professeur
@@ -83,7 +83,8 @@ class GestionUtilisateur:
         utilisateur = Utilisateur.recuperer_utilisateur(pseudo)  
         if utilisateur:
             nouveauMotDePasse =  bcrypt.hashpw(input("Entrez le nouveau mot de passe : ").encode('utf-8'), bcrypt.gensalt())
-            utilisateur.modifierMotDePasse(nouveauMotDePasse,pseudo)
+            utilisateur.modifierMotDePasse(nouveauMotDePasse.decode('utf-8'),pseudo)
+            print(f"Le mot de passe pour {pseudo} a été modifié avec succès.")
         else:
             print(f"L'utilisateur {pseudo} n'existe pas.")
             

@@ -107,7 +107,7 @@ class Professeur(ICRUDProfesseur, IEducation):
         finally:
             if connection.is_connected():
                 curseur.close()
-                connection.close()
+                
 
     @classmethod
     def modifier(cls, professeur):

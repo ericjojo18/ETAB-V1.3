@@ -167,7 +167,7 @@ class GestionProf():
             for pr in professeurs:
                 print(f"\nID: {pr.get_id()}, Nom : {pr.get_nom()}, Prénom : {pr.get_prenom()}, Ville : {pr.get_ville()}, "
                     f"Date de Naissance : {pr.get_date_naissance()}, Téléphone : {pr.get_telephone()}, "
-                    f"Vacant : {'oui' if pr.get_vacant() else 'non'}, Matière enseignée : {pr.get_matiere_enseigne()}, "
+                    f"Vacant : { pr.get_vacant() }, Matière enseignée : {pr.get_matiere_enseigne()}, "
                     f"Prochain cours : {pr.get_prochain_cours()}, Sujet de la prochaine réunion : {pr.get_sujet_prochaine_reunion()}")
                 print("-" * 20)
             self.afficher_menu()
