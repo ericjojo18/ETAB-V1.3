@@ -35,7 +35,7 @@ class Professeur(ICRUDProfesseur, IEducation):
     def get_vacant(self):
         return self.__vacant 
     
-    def get_matiere_enseignee(self):
+    def get_matiere_enseigne(self):
         return self.__matiere_enseigne
 
     def get_telephone(self):

@@ -172,7 +172,7 @@ class GestionProf():
                 print("-" * 20)
             self.afficher_menu()
         else:
-            print("Aucun élève trouvé.")
+            print("Aucun professeur trouvé.")
 
             
         #Obtenir le dernier professeur ajouté
